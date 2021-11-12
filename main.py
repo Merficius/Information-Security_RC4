@@ -1,7 +1,7 @@
 import time
 
-N = 8192
-plaintext = "HI"
+N = 256
+plaintext = "MEET ME AFTER THE TOGA PARTY."
 
 
 def ksa_rc4(key):
@@ -15,7 +15,7 @@ def ksa_rc4(key):
         s[i], s[j] = s[j], s[i]
 
     #print("rc4:", s)
-    print(s)
+    # print(s)
     return s
 
 
@@ -31,11 +31,12 @@ def PRGA_rc4(s):
         s[i], s[j] = s[j], s[i]
 
         key = s[(s[i] + s[j]) % N]
-        print("key:", key)
+        #print("key:", key)
 
-        print(hex(ord(plaintext[iterator]) ^ key))
-        ciphertext += chr(ord(plaintext[iterator]) ^ key)
-    print("ciphertext:", ciphertext)
+        #print(hex(ord(plaintext[iterator]) ^ key))
+        pre_cipher = str(hex(ord(plaintext[iterator]) ^ key))
+        ciphertext += pre_cipher[2:]
+    #print("ciphertext:", ciphertext)
     return ciphertext
 
 
@@ -90,22 +91,23 @@ def PRGA_proposed(s1, s2):
         #print("keey2:", key2)
 
         key = key1 + key2
+        # print(key)
         #print("keey:", key)
-        ciphertext += chr(ord(plaintext[iterator]) ^ key)
-    print("ciphertext:", ciphertext)
+        pre_cipher = str(hex(ord(plaintext[iterator]) ^ key))
+        ciphertext += pre_cipher[2:]
+    #print("ciphertext:", ciphertext)
     return ciphertext
 
 
 start = time.time()
-result = ksa_rc4('17ewew')
+result = ksa_rc4("alice")
 print(PRGA_rc4(result))
 end = time.time()
 print(f"Runtime of normal rc4 is   {end - start}")
 
 
 start = time.time()
-s1, s2 = ksa_proposed("17")
-#print(s1, s2)
-PRGA_proposed(s1, s2)
+s1, s2 = ksa_proposed("alice")
+print(PRGA_proposed(s1, s2))
 end = time.time()
 print(f"Runtime of proposed rc4 is {end - start}")
